@@ -1,7 +1,7 @@
 name: install minicube cluster
 
 on:
-  pull_request:
+  push:
     branches:
     - master
     

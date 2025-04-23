@@ -19,9 +19,7 @@ jobs:
         shell: bash
         run: |
           sudo apt-get update
-          echo "Install curl and ca-certificates"
-          sudo apt-get install curl ca-certificates
-          echo "Install kubectl"
+          sudo apt-get install curl ca-certificates conntrack
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
         
@@ -30,7 +28,7 @@ jobs:
         run: |
           echo "Downloading and install minicube..."
           curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
-          sudo install minikube-linux-amd64 /usr/local/bin/minikube
+          sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
           minicube version
           
       - name: Start time

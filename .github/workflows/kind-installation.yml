@@ -42,6 +42,8 @@ jobs:
         shell: bash
         run: |
           sudo kind create cluster --name my-cluster --kubeconfig ~/.kube/config-kind
+          sudo chown $(id -u):$(id -g) ~/.kube/config-kind
+          sudo chmod u+rwx ~/.kube
           
       - name: End time
         id: end_time
@@ -55,15 +57,11 @@ jobs:
       - name: Time to become ready
         shell: bash
         run: |
-          sudo chown $(id -u):$(id -g) ~/.kube/config-kind
-          sudo chmod u+rwx ~/.kube
           export KUBECONFIG=$HOME/.kube/config-kind
-          first_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[0].firstTimestamp}")
-          last_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[-1].lastTimestamp}")
+          first_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -o=jsonpath="{.items[0].firstTimestamp}")
+          last_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -o=jsonpath="{.items[-1].lastTimestamp}")
           first_form=$(date -u -d "$first_event_timestamp" "+%s")
-          echo $first_form >> $GITHUB_ENV
           last_form=$(date -u -d "$last_event_timestamp" "+%s")
-          echo $last_form >> $GITHUB_ENV
           duration_seconds=$(($last_form-$first_form))
           echo "Cluster startup time: $duration_seconds seconds"
           

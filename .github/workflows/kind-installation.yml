@@ -24,7 +24,6 @@ jobs:
           echo "Install kubectl"
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-          echo "export KUBECONFIG=$HOME/.kube/config-kind" >> ~/.bashrc
         
       - name: Download and Install KinD
         shell: bash
@@ -58,25 +57,19 @@ jobs:
       - name: Time to become ready
         shell: bash
         run: |
-          first_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[0].lastTimestamp}")
+          export KUBECONFIG=$HOME/.kube/config-kind
+          first_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[0].firstTimestamp}")
           last_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[-1].lastTimestamp}")
-          first_epoch=$(date -u -d "$first_event_timestamp" "+%s")
-          last_epoch=$(date -u -d "$last_event_timestamp" "+%s")
-          duration_seconds=$(($last_epoch-$first_epoch))
+          first_form=$(date -u -d "$first_event_timestamp" "+%s")
+          last_form=$(date -u -d "$last_event_timestamp" "+%s")
+          duration_seconds=$(($last_form-$first_form))
           echo "Cluster startup time: $duration_seconds seconds"
           
       - name: Show cluster info
         shell: bash
         run: |
+          export KUBECONFIG=$HOME/.kube/config-kind
           kubectl cluster-info
-          
-      - name: Show nodes
-        shell: bash
-        run: |
           kubectl get nodes
-          
-      - name: Show pods
-        shell: bash
-        run: |
           kubectl get podes -A
 

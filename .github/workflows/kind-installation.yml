@@ -41,7 +41,9 @@ jobs:
       - name: Create KinD cluster
         shell: bash
         run: |
-          sudo kind create cluster --name my-cluster
+          sudo kind create cluster --name my-cluster --kubeconfig ~/.kube/config-kind
+          sudo chown $(id -u):$(id -g) ~/.kube/config-kind
+          sudo chmod u+rwx ~/.kube
           
       - name: End time
         id: end_time
@@ -55,6 +57,7 @@ jobs:
       - name: Time to become ready
         shell: bash
         run: |
+          export KUBECONFIG=$HOME/.kube/config-kind
           first_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[0].lastTimestamp}")
           last_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[-1].lastTimestamp}")
           first_epoch=$(date -u -d "$first_event_timestamp" "+%s")
@@ -65,6 +68,7 @@ jobs:
       - name: Show cluster info
         shell: bash
         run: |
+          export KUBECONFIG=$HOME/.kube/config-kind
           kubectl cluster-info --context kind-new-cluster
           
       - name: Show nodes

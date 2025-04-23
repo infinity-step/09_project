@@ -69,7 +69,7 @@ jobs:
         shell: bash
         run: |
           export KUBECONFIG=$HOME/.kube/config-kind
-          kubectl cluster-info --context kind-new-cluster
+          kubectl cluster-info
           
       - name: Show nodes
         shell: bash

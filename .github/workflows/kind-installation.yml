@@ -55,7 +55,7 @@ jobs:
       - name: Time to become ready
         shell: bash
         run: |
-          export KUBECONFIG=$HOME/.kube/config-kind:$HOME/.kube/config-minicube
+          export KUBECONFIG=$HOME/.kube/config-kind
           first_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[0].lastTimestamp}")
           last_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[-1].lastTimestamp}")
           first_epoch=$(date -u -d "$first_event_timestamp" "+%s")

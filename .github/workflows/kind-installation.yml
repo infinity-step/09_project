@@ -54,12 +54,12 @@ jobs:
           duration=$((end_time - start_time))
           echo "Cluster creation took $duration seconds."
           
-      - name: Time to become ready
+      - name: Time to become ready from kubernets event journal
         shell: bash
         run: |
           export KUBECONFIG=$HOME/.kube/config-kind
-          first_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -o=jsonpath="{.items[0].firstTimestamp}")
-          last_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -o=jsonpath="{.items[-1].lastTimestamp}")
+          first_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[0].firstTimestamp}")
+          last_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[-1].lastTimestamp}")
           first_form=$(date -u -d "$first_event_timestamp" "+%s")
           last_form=$(date -u -d "$last_event_timestamp" "+%s")
           duration_seconds=$(($last_form-$first_form))

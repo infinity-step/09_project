@@ -41,7 +41,7 @@ jobs:
       - name: Create KinD cluster
         shell: bash
         run: |
-          kind create cluster --name my-cluster --wait 5m
+          kind create cluster --name my-cluster --wait 1m
           
       - name: End time
         id: end_time

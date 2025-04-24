@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         
       - name: Install auxiliary programs
         shell: bash
@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           echo "Downloading and install KinD..."
-          [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.23.0/kind-linux-amd64
+          [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
           chmod +x ./kind
           sudo mv ./kind /usr/local/bin/kind
           kind version
@@ -41,7 +41,7 @@ jobs:
       - name: Create KinD cluster
         shell: bash
         run: |
-          kind create cluster --name new-cluster
+          kind create cluster --name my-cluster
           
       - name: End time
         id: end_time
@@ -67,5 +67,4 @@ jobs:
         run: |
           kubectl cluster-info
           kubectl get nodes
-          kubectl cluster-info dump
 

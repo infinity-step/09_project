@@ -7,7 +7,7 @@ on:
     
 jobs:
   start_script:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
           echo "Downloading and install minicube..."
           curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
           sudo install minikube-linux-amd64 /usr/local/bin/minikube
-          minicube version
+          minikube version
           
       - name: Start time
         id: start_time

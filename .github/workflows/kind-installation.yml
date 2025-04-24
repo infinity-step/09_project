@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           echo "Downloading and install KinD..."
-          [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
           chmod +x ./kind
           sudo mv ./kind /usr/local/bin/kind
           kind version
@@ -41,8 +41,8 @@ jobs:
       - name: Create KinD cluster
         shell: bash
         run: |
-          sudo kind create cluster --name my-cluster --kubeconfig ~/.kube/config-kind
-          sudo chown $(id -u):$(id -g) ~/.kube/config-kind
+          sudo kind create cluster --name my-cluster --kubeconfig ~/.kube/config
+          sudo chown $(id -u):$(id -g) ~/.kube/config
           sudo chmod u+rwx ~/.kube
           
       - name: End time
@@ -57,7 +57,7 @@ jobs:
       - name: Time to become ready from kubernets event journal
         shell: bash
         run: |
-          export KUBECONFIG=$HOME/.kube/config-kind
+          export KUBECONFIG=$HOME/.kube/config
           first_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[0].firstTimestamp}")
           last_event_timestamp=$(kubectl get events --sort-by=.metadata.creationTimestamp -n kube-system -o=jsonpath="{.items[-1].lastTimestamp}")
           first_form=$(date -u -d "$first_event_timestamp" "+%s")
@@ -68,7 +68,7 @@ jobs:
       - name: Show cluster info
         shell: bash
         run: |
-          export KUBECONFIG=$HOME/.kube/config-kind
+          export KUBECONFIG=$HOME/.kube/config
           kubectl cluster-info
           kubectl get nodes
           kubectl cluster-info dump

@@ -71,4 +71,5 @@ jobs:
           export KUBECONFIG=$HOME/.kube/config-kind
           kubectl cluster-info
           kubectl get nodes
+          kubectl cluster-info dump
 
